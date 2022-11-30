@@ -63,6 +63,14 @@ for i in newPop:
     
 usecsv.writecsv('newPop.csv', new)
 
+import csv 
+f = open('newPop.csv','r')
+rdr = csv.reader(f)
+print("이제부터 읽어요.")
+for line in rdr:
+    print(line)
+f.close()
+
 
 
 
