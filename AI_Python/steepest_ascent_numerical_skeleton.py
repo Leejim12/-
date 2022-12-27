@@ -131,6 +131,14 @@ def bestOf(neighbors, p):
     # 1. 가장 처음 sample을 best라 가정.
     # 2. 두 번째 부터 계속 비교하면서 더 좋은게 찾아지면 best로 저장해 둔다.
     # 3. 모두 다 비교 끝나면 best 반환
+    best = neighbors[0]
+    bestValue = evaluate(best,p)
+    
+    for i in range(1,len(neighbors)):
+        newValue = evaluate(neighbors[i],p)
+        if newValue < bestValue:
+            best = neighbors[i]
+            bestValue = newValue
     return best, bestValue
 
 def describeProblem(p):
