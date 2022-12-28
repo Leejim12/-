@@ -1,6 +1,6 @@
 import random
 import math
-
+import os
 # 전역변수 두개
 DELTA = 0.01   # Mutation step size
 NumEval = 0    # Total number of evaluations 
@@ -13,18 +13,22 @@ def main():
     # Call the search algorithm
 
     # SteepestAscent 알고리즘을 실행하여 solution을 구하기
-    solution, minimum = steepestAscent(p) ## !!주변에서 젤 좋은걸로 이동하는 알고리즘
+    # solution, minimum = steepestAscent(p) ## !!주변에서 젤 좋은걸로 이동하는 알고리즘
 
+    # Gradient Descent 알고리즘 실행
+    solution,minimun = gradientDecent(p)
+    
     # Show the problem and algorithm settings
     describeProblem(p)
     displaySetting()
 
     # Report results
-    displayResult(solution, minimum)
+    displayResult(solution, minimun)
 
 ## line = f,readline().rstrip() 이렇게 한줄씩 할 수도 있다.
 def createProblem(): ###
     # proName = input("What kinda problem do you want to solve?()")
+    print("경로",os.getcwd())
     proName = "Convex"
     file = open("./Search Tool Sample Problems/" + proName + ".txt",'r')
     content = file.read()
@@ -80,6 +84,60 @@ def steepestAscent(p):
         
     # Best solution과 그때의 Cost를 반환
     return current, valueC
+
+## Gradient decent 프로토타입
+
+def gradient(x,v,dx,p):## p도 넣어야 하는 것 아닌가? ()
+    # x : current value (list)
+    # v : current values's function result
+    # dx : x 증분
+    grad = []
+    for i in range(len(x)):
+        x_new = x[i]
+        x_new += dx
+        # for i in x_new:
+        #     i += dx
+        # x_new += dx
+        v_new = evaluate(x_new,p)
+        grad.append((v_new-v)/dx)   ## 미분계수들로 이루어진 list
+    return grad
+
+
+def gradientDecent(p):
+    current = randomInit(p)
+    valueC = evaluate(current,p)
+    while True:
+        # Grad를 따라 이동할 위치 판단
+        nextP = takeStep(current,valueC,1e-4,DELTA,p) ## 
+        # 이동한 위치에서의 함수값 계산
+        valueN = evaluate(nextP,p)
+        
+        if valueN <= valueC:
+            current = nextP
+            valueC = valueN
+        else:
+            break
+        # best,bestValue = bestOf(neighbors,p)
+        return current,valueC
+
+def takeStep(x,v,alpha,dx,p):   
+            # x : current value (list)
+            # v : current values's function result 
+    # Gradient를 얻는다.
+    grad = gradient(x,v,dx,p)
+    x_new = x[:]
+    low = p[1][1]
+    up = p[1][2]
+    # 업데이트
+    for i in range(len(x_new)):
+        # if (x_new[i]-alpha*grad[i])>=p[1][1][i] and (x_new[i]-alpha*grad[i])<=p[1][2][i]:# ideal case
+        #     x_new[i] = x_new[i]-alpha*grad[i]
+        # else:
+        #     pass
+        x_new[i] -= alpha*grad[i]
+        if not (low[i]<=x_new[i]<=up[i]):
+            return x
+    return x_new
 
 
 def randomInit(p):
@@ -156,7 +214,7 @@ def describeProblem(p):
 
 def displaySetting():
     print()
-    print("Search algorithm: Steepest-Ascent Hill Climbing")
+    print("Search algorithm: Graduent Descent")
     print()
     print("Mutation step size:", DELTA)
 
