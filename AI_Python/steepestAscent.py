@@ -1,53 +1,51 @@
-from problem_skeleton import Numeric as k
+from problem_skeleton import Numeric
 
 def main():
-# Numeric class instance 생성
-  NC = k()
-  
-# setVariable 이용해 문제 읽어옴
-  NC.setVariables
-# steepestAscent 실행
-  steepestAscent(NC)
-# describe, report 이용 결과 출력
-  NC.describe()
-  NC.report()
-  NC.coordinate()
+    # Numeric class instance를 생성한다.
+    cls_num = Numeric()
+    # setVariable을 이용해 문제를 읽어온다.
+    cls_num.setVariables()
+    # steepestAscent를 실행한다.
+    steepestAscent(cls_num)
+    # describe, report를 이용해 결과를 출력한다.
+    cls_num.describe()
+    cls_num.report()
 
-
-def steepestAscent(NC):
-    current = NC.randomInit()
-    valueC = NC.evaluate(current)
+def steepestAscent(cls_num):
+    current = cls_num.randomInit()
+    valueC = cls_num.evaluate(current)
     while True:
-        neighbors = NC.mutants(current)
-        # 각각의 neighbor에 대해 함수 값 계산 => 더 좋은거 있으면 이동
-        best, bestValue = bestOf(neighbors)
-        if bestValue < valueC:
-          current = best
-          valueC = bestValue
-        else:
-          break
-    NC.storeResult()
+        neighbors = cls_num.mutants(current)
+        best, bestValue = bestOf(neighbors, cls_num)
 
-def bestOf(neighbors, p):
-    # 1. 가장 처음 sample을 best라 가정.
-    # 2. 두 번째 부터 계속 비교하면서 더 좋은게 찾아지면 best로 저장해 둔다.
-    # 3. 모두 다 비교 끝나면 best 반환
+        if bestValue < valueC:
+            current = best
+            valueC = bestValue
+        else:
+            break
+    cls_num.storeResult(current, valueC)
+
+def bestOf(neighbors, cls_num):
+    # p : Numeric class instance
     best = neighbors[0]
-    bestValue = k.evaluate(best,p)
-    
-    for i in range(1,len(neighbors)):
-        newValue = k.evaluate(neighbors[i],p)
+    bestValue = cls_num.evaluate(best)
+    # 2. 두 번째 부터 계속 비교하면서, 더 좋은게 찾아지면 best로 저장해 둔다.
+    for i in range(1, len(neighbors)):
+        newValue = cls_num.evaluate(neighbors[i])
         if newValue < bestValue:
             best = neighbors[i]
             bestValue = newValue
+
+    # 3. 모두 다 비교가 끝났으면 best를 반환한다.
     return best, bestValue
 
-def displaySetting(NC):
-    NC = k()
+def displaySetting(cls_num):
     print()
-    print("Search algorithm: Graduent Descent")
+    print("Search algorithm: Steepest-Ascent Hill Climbing")
     print()
-    print("Mutation step size:", NC.getDelta())
+    print("Mutation step size:", cls_num.getDelta())
+
+
 
 
 main()
