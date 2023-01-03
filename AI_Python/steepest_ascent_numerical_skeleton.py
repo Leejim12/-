@@ -93,8 +93,8 @@ def gradient(x,v,dx,p):## p도 넣어야 하는 것 아닌가? ()
     # dx : x 증분
     grad = []
     for i in range(len(x)):
-        x_new = x[i]
-        x_new += dx
+        x_new = x[:]
+        x_new[i] += dx
         # for i in x_new:
         #     i += dx
         # x_new += dx
